@@ -91,6 +91,12 @@ npm install
 npm run dev
 ```
 
+To run both frontend and backend together:
+```bash
+cd frontend
+npm run fullstack:dev
+```
+
 ### Backend (Spring Boot)
 
 The backend is a Spring Boot application located in the `backend` directory.
@@ -104,6 +110,8 @@ cd backend
 ## Project Structure
 
 - `frontend/`: Next.js application (git submodule)
+  - Contains all JavaScript dependencies and configuration
+  - Includes scripts to run both frontend and backend
 - `backend/`: Spring Boot application (git submodule)
 - `docker-compose.yml`: Docker Compose configuration
 - `docker-start.sh`: Script to start the Docker containers with hot-reloading
@@ -124,12 +132,14 @@ cd backend
 
 ## Available Scripts
 
-- `npm run dev`: Start both frontend and backend in development mode
-- `npm run frontend:dev`: Start only the frontend in development mode
+All scripts are now located in the frontend package.json:
+
+- `npm run dev`: Start only the frontend in development mode
 - `npm run backend:dev`: Start only the backend in development mode
+- `npm run fullstack:dev`: Start both frontend and backend in development mode
 - `npm run install:all`: Install dependencies for both frontend and backend
-- `npm run build`: Build both frontend and backend
-- `npm run start`: Start both frontend and backend in production mode
+- `npm run fullstack:build`: Build both frontend and backend
+- `npm run fullstack:start`: Start both frontend and backend in production mode
 
 ## API Endpoints
 
