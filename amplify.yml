@@ -15,18 +15,4 @@ frontend:
   cache:
     paths:
       - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
-
-  - appRoot: backend/api
-    backend:
-      phases:
-        build:
-          commands:
-            - ./mvnw clean package -DskipTests
-      artifacts:
-        baseDirectory: target
-        files:
-          - '*.jar'
-      cache:
-        paths:
-          - ~/.m2/repository/**/* 
+      - frontend/.next/cache/**/* 
