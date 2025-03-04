@@ -1,32 +1,33 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd frontend
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: frontend/.next
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.next/cache/**/*
+applications:
+  - appRoot: frontend
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
 
-backend:
-  phases:
-    build:
-      commands:
-        - cd backend/api
-        - ./mvnw clean package -DskipTests
-  artifacts:
-    baseDirectory: backend/api/target
-    files:
-      - '*.jar'
-  cache:
-    paths:
-      - ~/.m2/repository/**/* 
+  - appRoot: backend/api
+    backend:
+      phases:
+        build:
+          commands:
+            - ./mvnw clean package -DskipTests
+      artifacts:
+        baseDirectory: target
+        files:
+          - '*.jar'
+      cache:
+        paths:
+          - ~/.m2/repository/**/* 
