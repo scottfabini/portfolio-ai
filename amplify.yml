@@ -4,6 +4,8 @@ frontend:
     preBuild:
       commands:
         - cd frontend
+        - echo "Verifying package files exist..."
+        - ls -la package*.json
         - npm ci
     build:
       commands:
