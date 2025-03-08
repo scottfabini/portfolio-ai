@@ -1,48 +1,47 @@
 version: 1
-applications:
-  - backend:
-      phases:
-        preBuild:
-          commands:
-            - echo "Installing backend dependencies..."
-            - cd backend
-            - java -version
-            - ./mvnw --version
-        build:
-          commands:
-            - echo "Building Spring Boot application..."
-            - ./mvnw clean package -DskipTests
-        postBuild:
-          commands:
-            - echo "Backend build completed"
-      artifacts:
-        baseDirectory: backend/target
-        files:
-          - "**/*"
-      cache:
-        paths:
-          - "backend/.m2/**/*"
-  - frontend:
-      phases:
-        preBuild:
-          commands:
-            - echo "Installing frontend dependencies..."
-            - cd frontend
-            - npm ci
-        build:
-          commands:
-            - echo "Building Next.js application..."
-            - npm run build
-        postBuild:
-          commands:
-            - echo "Frontend build completed"
-      artifacts:
-        baseDirectory: frontend/.next
-        files:
-          - "**/*"
-      cache:
-        paths:
-          - "frontend/node_modules/**/*"
-      environment:
-        variables:
-          NODE_ENV: production
+backend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing backend dependencies..."
+        - cd backend
+        - java -version
+        - ./mvnw --version
+    build:
+      commands:
+        - echo "Building Spring Boot application..."
+        - ./mvnw clean package -DskipTests
+    postBuild:
+      commands:
+        - echo "Backend build completed"
+  artifacts:
+    baseDirectory: backend/target
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - "backend/.m2/**/*"
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing frontend dependencies..."
+        - cd frontend
+        - npm ci
+    build:
+      commands:
+        - echo "Building Next.js application..."
+        - npm run build
+    postBuild:
+      commands:
+        - echo "Frontend build completed"
+  artifacts:
+    baseDirectory: frontend/.next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - "frontend/node_modules/**/*"
+  environment:
+    variables:
+      NODE_ENV: production

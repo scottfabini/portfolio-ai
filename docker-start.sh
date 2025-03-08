@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# Stop any running containers
-echo "Stopping any running containers..."
-docker-compose down
+# Exit on error
+set -e
 
-# Build and start the containers
-echo "Building and starting containers with hot-reloading..."
-docker-compose up --build
+echo "Building and starting portfolio-ai containers..."
 
-# To run in detached mode, uncomment the following line:
-# docker-compose up --build -d
+# Update submodules if needed
+git submodule update --init --recursive
 
-echo "Containers are starting..."
-echo "Frontend will be available at: http://localhost:3000"
-echo "Backend API will be available at: http://localhost:8080"
-echo "H2 Database Console (if enabled): http://localhost:8080/h2-console"
+# Build and start containers
+docker-compose build
+docker-compose up -d
 
-echo "To view logs, run: docker-compose logs -f"
-echo "To stop containers, run: docker-compose down" 
+echo "Containers started successfully!"
+echo "  - Frontend: http://localhost:3000"
+echo "  - Backend: http://localhost:8080"
