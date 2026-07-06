@@ -3,8 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - 'echo "Current directory: $(pwd)"'
-        - cd ../frontend
+        - cd frontend
         - npm ci
     build:
       commands:
@@ -32,35 +31,3 @@ frontend:
   # Environment variables for the frontend
   environmentVariables:
     NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-
-backend:
-  phases:
-    preBuild:
-      commands:
-        - cd backend
-        - 'curl -O https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz'
-        - tar xf openjdk-17.0.2_linux-x64_bin.tar.gz
-        - 'export JAVA_HOME=$(pwd)/jdk-17.0.2'
-        - 'export PATH=${JAVA_HOME}/bin:${PATH}'
-        - java -version
-        - 'curl -O https://dlcdn.apache.org//maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz'
-        - tar xf apache-maven-3.9.6-bin.tar.gz
-        - 'export M2_HOME=$(pwd)/apache-maven-3.9.6'
-        - 'export PATH=${M2_HOME}/bin:${PATH}'
-        - mvn -version
-        - mvn clean install -DskipTests
-    build:
-      commands:
-        - mvn package -DskipTests
-  artifacts:
-    files:
-      - backend/target/*.jar
-    discard-paths: no
-  cache:
-    paths:
-      - backend/**/target/**
-  # Environment variables for the backend
-  environmentVariables:
-    SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-    SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-    SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD} 
