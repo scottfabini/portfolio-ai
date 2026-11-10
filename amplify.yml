@@ -18,16 +18,14 @@ frontend:
   customHeaders:
     - pattern: '**/*'
       headers:
+        # Cross-origin isolation (SharedArrayBuffer) for sqlite-wasm's OPFS VFS on /todo
+        - key: 'Cross-Origin-Opener-Policy'
+          value: 'same-origin'
+        - key: 'Cross-Origin-Embedder-Policy'
+          value: 'require-corp'
         - key: 'Cache-Control'
           value: 'public, max-age=0, must-revalidate'
   redirects:
     - source: '</^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/'
       target: '/index.html'
       status: '200'
-    - source: '/api/*'
-      target: 'https://${API_DOMAIN}/api/:splat'
-      status: '200'
-      condition: 'Country=US'
-  # Environment variables for the frontend
-  environmentVariables:
-    NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}

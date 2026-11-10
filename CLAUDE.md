@@ -50,7 +50,7 @@ Spring Boot 3.2 web app with no controllers, entities or datasource. Todo logic 
 
 ### Deployment (AWS Amplify)
 
-Frontend and backend are deployed as **separate Amplify apps**. Each has its own `amplify.yml` and `amplify-build.sh`. The frontend needs no env vars or backend, so the backend Amplify app can be retired.
+Frontend and backend are deployed as **separate Amplify apps**. Each has its own `amplify.yml` and `amplify-build.sh`. The live site is built from the **parent repo** using the root `amplify.yml`, which is where the COOP/COEP headers (needed for the todo's OPFS VFS) must live; `frontend/amplify.yml` is not used by that build. The frontend needs no env vars or backend, so the backend Amplify app can be retired.
 
 `frontend/` and `backend/` are git submodules of this parent repo. Any content/code change requires two commits: one inside the submodule (`cd frontend && git commit && git push`), then one in the parent repo to bump the submodule pointer.
 
