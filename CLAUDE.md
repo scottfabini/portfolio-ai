@@ -21,7 +21,7 @@ mvn clean package -DskipTests  # Build only
 
 ### Full stack
 ```bash
-docker-compose up   # frontend :3000, backend :8080, MySQL :3306
+docker-compose up   # frontend :3000, backend :8080
 ```
 
 ### Single test
@@ -35,27 +35,22 @@ cd backend && mvn test -Dtest=TestClassName
 
 ## Architecture
 
-This is a monorepo: Next.js 14 frontend + Spring Boot 3.2 backend + MySQL.
+This is a monorepo: Next.js 14 frontend + Spring Boot 3.2 backend (currently a bare shell with no endpoints or database).
 
 ### Frontend
 
 - **App Router** (`app/`): layouts and pages
 - **Components** (`components/`): client components use `'use client'` directive
 - **Static export**: `next.config.js` sets `output: 'export'` — no SSR, purely static files served via CDN
-- **Runtime API URL**: Because it's static, API URL can't be baked in at build time. `scripts/update-env.js` writes `public/env-config.js`, which gets injected into `index.html` before React hydrates. At runtime, components read `window.ENV.NEXT_PUBLIC_API_URL` via the `getApiUrl()` helper.
+- **Todo demo is client-side**: `/todo` stores data in SQLite compiled to WASM (`@sqlite.org/sqlite-wasm`), persisted in OPFS via the `opfs-sahpool` VFS, falling back to in-memory. The DB lives in a Web Worker (`lib/todoDb.worker.ts`, client in `lib/todoDb.ts`). `scripts/copy-sqlite-wasm.js` (run by `predev`/`prebuild`) copies `sqlite3.wasm` into `public/` (gitignored). Schema changes go through the ordered `MIGRATIONS` array in the worker, tracked by `PRAGMA user_version` (append new entries, never edit old ones). Rows are ordered by a `position` column that drag-and-drop (`@dnd-kit`) rewrites via the `reorder` op. The sahpool VFS allows one connection, so a second open tab falls back to in-memory.
 
 ### Backend
 
-Thin controller → service layer → JPA repository.
-
-- `@CrossOrigin(origins = "*")` on controllers (permissive CORS for dev)
-- Entities use Lombok `@Data`; prefer **records** for new DTOs
-- `spring.jpa.hibernate.ddl-auto=update` — schema auto-migrates on startup (be careful with breaking column changes)
-- Timestamps managed in `TodoService` using `LocalDateTime`
+Spring Boot 3.2 web app with no controllers, entities or datasource. Todo logic was removed when the demo moved into the browser. Add JPA and a database dependency back if a real API is needed again.
 
 ### Deployment (AWS Amplify)
 
-Frontend and backend are deployed as **separate Amplify apps**. Each has its own `amplify.yml` and `amplify-build.sh`. The root `amplify.yml` rewrites `/api/*` → backend domain. Key env var: `NEXT_PUBLIC_API_URL` must be set in the Amplify frontend console.
+Frontend and backend are deployed as **separate Amplify apps**. Each has its own `amplify.yml` and `amplify-build.sh`. The frontend needs no env vars or backend, so the backend Amplify app can be retired.
 
 `frontend/` and `backend/` are git submodules of this parent repo. Any content/code change requires two commits: one inside the submodule (`cd frontend && git commit && git push`), then one in the parent repo to bump the submodule pointer.
 
